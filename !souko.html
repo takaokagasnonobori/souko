@@ -1,4 +1,4 @@
-<!souko html>
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -33,10 +33,37 @@
   <script>
     let lastScanned = "";
     let currentMode = "入庫";
+    let html5QrCode;
+    let scannerRunning = false;
 
     function setMode(mode) {
       currentMode = mode;
       document.getElementById("current-mode").innerText = mode;
+    }
+
+    function startScanner() {
+      html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        (decodedText) => {
+          if (!scannerRunning) return;
+
+          lastScanned = decodedText;
+          document.getElementById("log").innerHTML += `<div>📦 読み取り: ${decodedText}</div>`;
+          document.getElementById("beep").play();
+
+          // スキャン一時停止
+          html5QrCode.stop();
+          scannerRunning = false;
+        },
+        (errorMessage) => {
+          // 読み取りエラーは無視
+        }
+      ).then(() => {
+        scannerRunning = true;
+      }).catch(err => {
+        console.error("読み取り開始失敗:", err);
+      });
     }
 
     function saveLog() {
@@ -52,23 +79,3 @@
         }),
         headers: { "Content-Type": "application/json" }
       }).then(res => res.text()).then(txt => {
-        document.getElementById("log").innerHTML += `<div>✅ ${currentMode}: ${lastScanned} x ${qty} を保存しました。</div>`;
-      });
-    }
-
-    const beepSound = document.getElementById("beep");
-
-    const html5QrCode = new Html5Qrcode("scanner");
-    html5QrCode.start({ facingMode: "environment" }, {
-      fps: 10,
-      qrbox: 250
-    }, (decodedText) => {
-      lastScanned = decodedText;
-      document.getElementById("log").innerHTML += `<div>📦 読み取り: ${decodedText}</div>`;
-      beepSound.play(); // 成功時の音
-    }, (errorMessage) => {
-      // 読み取り失敗は無視
-    });
-  </script>
-</body>
-</html>
