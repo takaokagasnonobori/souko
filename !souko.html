@@ -21,7 +21,7 @@
     const log = document.getElementById("log");
 
     function sendToSheet(code, qty) {
-      fetch("YOUR_GAS_WEBAPP_URL", {
+      fetch("https://script.google.com/macros/s/AKfycbwwdzrjbNDBd750xKWvR54XIBB6eVvhBQgFgqRoxOzXf0sRmzMOs07J-TK8eScycSed/exec", {
         method: "POST",
         body: JSON.stringify({ code: code, quantity: qty }),
         headers: { "Content-Type": "application/json" }
