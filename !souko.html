@@ -1,41 +1,62 @@
 <!souko html>
 <html>
 <head>
-  <title>バーコード入出庫管理</title>
+  <meta charset="UTF-8">
+  <title>倉庫バーコード管理</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     body { font-family: sans-serif; padding: 20px; }
-    #scanner { width: 300px; margin: auto; }
-    #log { margin-top: 20px; max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; }
+    #scanner { width: 300px; margin-bottom: 20px; }
+    #log { max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; }
+    .mode-btn { margin-right: 10px; }
   </style>
 </head>
 <body>
-  <h1>バーコード読み取り</h1>
+  <h2>バーコード読み取り</h2>
+
+  <div>
+    <button class="mode-btn" onclick="setMode('入庫')">📥 入庫</button>
+    <button class="mode-btn" onclick="setMode('出庫')">📤 出庫</button>
+    <strong>現在モード: <span id="current-mode">入庫</span></strong>
+  </div>
+
   <div id="scanner"></div>
+
   <label>数量: <input type="number" id="quantity" min="1" value="1"></label>
-  <button onclick="sendData()">記録</button>
+  <button onclick="saveLog()">記録</button>
+
+  <h3>読み取り履歴</h3>
   <div id="log"></div>
+
+  <audio id="beep" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
 
   <script>
     let lastScanned = "";
-    const log = document.getElementById("log");
+    let currentMode = "入庫";
 
-    function sendToSheet(code, qty) {
-      fetch("https://script.google.com/macros/s/AKfycbwwdzrjbNDBd750xKWvR54XIBB6eVvhBQgFgqRoxOzXf0sRmzMOs07J-TK8eScycSed/exec", {
+    function setMode(mode) {
+      currentMode = mode;
+      document.getElementById("current-mode").innerText = mode;
+    }
+
+    function saveLog() {
+      if (!lastScanned) return;
+      const qty = document.getElementById("quantity").value;
+
+      fetch("YOUR_GAS_WEBAPP_URL", {
         method: "POST",
-        body: JSON.stringify({ code: code, quantity: qty }),
+        body: JSON.stringify({
+          code: lastScanned,
+          quantity: qty,
+          mode: currentMode
+        }),
         headers: { "Content-Type": "application/json" }
       }).then(res => res.text()).then(txt => {
-        log.innerHTML += `<div>✅ ${code} x ${qty} を保存しました。</div>`;
+        document.getElementById("log").innerHTML += `<div>✅ ${currentMode}: ${lastScanned} x ${qty} を保存しました。</div>`;
       });
     }
 
-    function sendData() {
-      if (lastScanned) {
-        const qty = document.getElementById("quantity").value;
-        sendToSheet(lastScanned, qty);
-      }
-    }
+    const beepSound = document.getElementById("beep");
 
     const html5QrCode = new Html5Qrcode("scanner");
     html5QrCode.start({ facingMode: "environment" }, {
@@ -43,9 +64,10 @@
       qrbox: 250
     }, (decodedText) => {
       lastScanned = decodedText;
-      log.innerHTML += `<div>📦 読み取り: ${decodedText}</div>`;
+      document.getElementById("log").innerHTML += `<div>📦 読み取り: ${decodedText}</div>`;
+      beepSound.play(); // 成功時の音
     }, (errorMessage) => {
-      // エラー無視
+      // 読み取り失敗は無視
     });
   </script>
 </body>
