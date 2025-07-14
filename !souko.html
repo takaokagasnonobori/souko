@@ -1,7 +1,6 @@
 <!souko html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8">
   <title>倉庫バーコード管理</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
@@ -80,7 +79,7 @@ button {
       if (!lastScanned) return;
       const qty = document.getElementById("quantity").value;
 
-      fetch("https://script.google.com/macros/s/AKfycbxdce8ZvhUXmsHG7gnp7JaQEB7gLWOUiR692x-02SjVNH0d1j0DLw1cKZ_sV1RCjFaK/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbyeVh3im3QZ8NSSALCTtpJ_q3zuyKwSngEaGtdVrh_-zVz85aR6uXNXIkFZSQZU8upz/exec", {
         method: "POST",
         body: JSON.stringify({
           code: lastScanned,
