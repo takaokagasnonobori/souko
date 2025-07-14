@@ -30,7 +30,7 @@
       padding: 24px 40px;
       margin: 16px auto;
       width: 100%;
-      max-width: 320px;
+      max-width: 360px;
       box-sizing: border-box;
       display: block;
       border-radius: 12px;
@@ -70,9 +70,9 @@
   <audio id="beep" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
 
   <script>
+    let html5QrCode = null;
     let lastScanned = "";
     let currentMode = "入庫";
-    let html5QrCode;
     let scannerRunning = false;
 
     function setMode(mode) {
@@ -81,6 +81,10 @@
     }
 
     function scanNext() {
+      if (!html5QrCode) {
+        console.error("html5QrCodeが初期化されていません");
+        return;
+      }
       if (scannerRunning) return;
       html5QrCode.start(
         { facingMode: "environment" },
@@ -104,7 +108,7 @@
       if (!lastScanned) return;
       const qty = document.getElementById("quantity").value;
 
-      fetch("https://script.google.com/macros/s/AKfycbwVzEPvP38lsxoZ10zJ87E8967Qkd10jUtrX1o4_50EMaxZanRV18PE6S0aW-lU-ple/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbxdce8ZvhUXmsHG7gnp7JaQEB7gLWOUiR692x-02SjVNH0d1j0DLw1cKZ_sV1RCjFaK/exec", {
         method: "POST",
         body: JSON.stringify({
           code: lastScanned,
@@ -126,14 +130,6 @@
     window.addEventListener("DOMContentLoaded", () => {
       html5QrCode = new Html5QrCode("scanner");
     });
-    // グローバル変数の宣言
-  let html5QrCode = null;
-
-  // 他の関数たち（setMode, scanNext, saveLog）を定義した後…
-
-  window.addEventListener("DOMContentLoaded", () => {
-    html5QrCode = new Html5QrCode("scanner"); // ✅ scanner要素が読み込まれた後に初期化
-  });
   </script>
 </body>
 </html>
