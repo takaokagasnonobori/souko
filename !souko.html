@@ -126,6 +126,14 @@
     window.addEventListener("DOMContentLoaded", () => {
       html5QrCode = new Html5QrCode("scanner");
     });
+    // グローバル変数の宣言
+  let html5QrCode = null;
+
+  // 他の関数たち（setMode, scanNext, saveLog）を定義した後…
+
+  window.addEventListener("DOMContentLoaded", () => {
+    html5QrCode = new Html5QrCode("scanner"); // ✅ scanner要素が読み込まれた後に初期化
+  });
   </script>
 </body>
 </html>
