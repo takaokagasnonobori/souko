@@ -43,7 +43,7 @@
       if (!lastScanned) return;
       const qty = document.getElementById("quantity").value;
 
-      fetch("YOUR_GAS_WEBAPP_URL", {
+      fetch("https://script.google.com/macros/s/AKfycbyR2iLgmFKnjNG7zJ6WvXYGX7ohepg73-tFDRXUdTxEMKnGrmdtCuSldHsQMHvSo1R_/exec", {
         method: "POST",
         body: JSON.stringify({
           code: lastScanned,
