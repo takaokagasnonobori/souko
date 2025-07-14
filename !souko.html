@@ -13,6 +13,12 @@
   </style>
 </head>
 <body>
+  <script>
+  window.addEventListener("DOMContentLoaded", () => {
+    html5QrCode = new Html5QrCode("scanner");
+    startScanner(); // ページ読み込み直後にスキャン開始
+  });
+</script>
   <h2>バーコード読み取り</h2>
 
   <div>
