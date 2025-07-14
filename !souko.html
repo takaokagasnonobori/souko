@@ -70,7 +70,7 @@
   <audio id="beep" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
 
   <script>
-    let html5QrCode = null;
+    let html5QrCode; // グローバル宣言
     let lastScanned = "";
     let currentMode = "入庫";
     let scannerRunning = false;
@@ -127,7 +127,7 @@
       });
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
+    window.onload = () => {
       html5QrCode = new Html5QrCode("scanner");
     });
   </script>
