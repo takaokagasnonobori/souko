@@ -78,4 +78,12 @@
           mode: currentMode
         }),
         headers: { "Content-Type": "application/json" }
-      }).then(res => res.text()).then(txt => {
+      .then(res => res.text()).then(txt => {
+  document.getElementById("log").innerHTML += `<div>✅ ${currentMode}: ${lastScanned} x ${qty} を保存しました。</div>`;
+  lastScanned = ""; // 初期化
+
+  // スキャン再開
+  startScanner();
+}).catch(err => {
+  console.error("記録エラー:", err);
+});
